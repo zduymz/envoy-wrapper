@@ -1,0 +1,42 @@
+version: "3"
+services:
+  proxy:
+    build:
+      context: .
+      dockerfile: proxy.Dockerfile
+    networks:
+      - envoymesh
+    expose:
+      - "80"
+      - "19000"
+    ports:
+      - "8080:80"
+      - "19000:19000"
+  web-server:
+    build:
+      context: .
+      dockerfile: webserver.Dockerfile
+    networks:
+      envoymesh:
+        aliases:
+          - webserver
+    expose:
+      - "8080"
+  web-server-sidecar:
+    build:
+      context: .
+      dockerfile: sidecar.Dockerfile
+    networks:
+      envoymesh:
+        aliases:
+          - webserver-sidecar
+    expose:
+      - "20000"
+      - "19000"
+      - "8090"
+    ports:
+      - "8090:8090"
+      - "19001:19000"
+
+networks:
+  envoymesh: {}
